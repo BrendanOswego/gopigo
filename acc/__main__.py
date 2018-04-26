@@ -12,7 +12,7 @@ from multiprocessing.managers import BaseManager
 import time
 import settings
 
-import acc
+#import acc
 import api
 
 
@@ -52,15 +52,15 @@ def main():
     listener_process.start()
 
     # for testing purposes
-    # listener_process.join()
+    listener_process.join()
 
     #listen_pid = listener_process.pid
 
     #print(str(os.getpid()) + " <> " + str(listen_pid))
 
-    #if os.getpid() != listen_pid:
-    acc_instance = acc.ACC(system_info, command_queue, 150, 30)
-    acc_instance.run()
+    # if os.getpid() != listen_pid:
+    #acc_instance = acc.ACC(system_info, command_queue, 150, 30)
+    # acc_instance.run()
     # acc.main(command_queue)
 
 

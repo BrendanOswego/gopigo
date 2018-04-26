@@ -291,16 +291,20 @@
     let timeout;
     let ts_timeout;
 
+    let info_timeout;
+
     window.onload = () => {
       getPowerStatus().then((power) => {
         setPowerDisplay(power);
       });
 
       getSystemInfo().then(json => {
-        refreshSettings(json);
+        refreshSettings(json, false);
         updateTS(false);
         refreshTimestamp();
       });
+
+      refreshInfoTimestamp();
     }
   </script>
 
@@ -355,7 +359,7 @@
      */
     refresh.onclick = (event) => {
       getSystemInfo().then(json => {
-        refreshSettings(json);
+        refreshSettings(json, true);
         clearInterval(ts_timeout);
         updateTS(true);
         refreshTimestamp();
@@ -380,6 +384,14 @@
   </script>
 
   <script type='text/javascript'>
+
+    const refreshInfoTimestamp = () => {
+      info_timeout = setInterval(() => {
+        getSystemInfo().then(json => {
+          refreshSettings(json, false);
+        });
+      }, 1000);
+    }
     /**
      * makes a GET request for the system information
      *
@@ -405,17 +417,25 @@
      * @param {JSON} json the JSON Object with the current settings
      *
      */
-    const refreshSettings = (json) => {
+    const refreshSettings = (json, refreshPressed) => {
       while (content.childNodes.length > 4) {
         content.removeChild(content.lastChild);
       }
-      setTimeout(() => {
-        const state = json.state
-        const settings = json.settings;
-        mapJsonToTable(state);
-        tableAddSpace();
-        mapJsonToTable(settings);
-      }, 50);
+      if (refreshPressed) {
+        setTimeout(() => {
+          updateUI(json);
+        }, 50);
+      } else {
+        updateUI(json);
+      }
+    }
+
+    const updateUI = (json) => {
+      const state = json.state
+      const settings = json.settings;
+      mapJsonToTable(state);
+      tableAddSpace();
+      mapJsonToTable(settings);
     }
 
     /**
