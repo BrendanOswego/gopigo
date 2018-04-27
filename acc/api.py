@@ -128,11 +128,10 @@ def turn_off():
       after the POST request
     """
     COMMAND_QUEUE.put(commands.TurnOffCommand())
+    system_info.setPower(False)
 
-    req = _pool.apply_async(getPower)
-    res = req.get()
     json = jsonify({
-        "power": res
+        "power": False
     })
     json.status_code = 200
     return json
